@@ -8,5 +8,8 @@ app.debug = True
 def hello():
     return "Hello, world! - Flask\n"
 
-from bae.core.wsgi import WSGIApplication
-application = WSGIApplication(app)
+if __name__ == "__main__":
+    app.run()
+else:
+    from bae.core.wsgi import WSGIApplication
+    application = WSGIApplication(app)
