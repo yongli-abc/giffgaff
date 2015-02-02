@@ -1,11 +1,12 @@
 #-*- coding:utf-8 -*-
+from flask import Flask, g, request
 
-def app(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'text/html')]
-    start_response(status, headers)
-    body=["Welcome to Baidu Cloud!\n"]
-    return body
+app = Flask(__name__)
+app.debug = True
+
+@app.route('/')
+def hello():
+    return "Hello, world! - Flask\n"
 
 from bae.core.wsgi import WSGIApplication
 application = WSGIApplication(app)
