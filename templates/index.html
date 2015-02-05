@@ -13,10 +13,10 @@
 
 {# 表单放在这里 #}
 {# 先处理表单验证的错误信息 #}
-{% if errors %}
+{% if my_errors %}
     <ul class=error_msg>
-        {% for error_msg in errors %}
-            <li>{{ error_msg }}</li>
+        {% for my_error_msg in my_errors %}
+            <li>{{ my_error_msg }}</li>
         {% endfor %}
     </ul>
 {% endif %}
