@@ -72,13 +72,13 @@ def valid_form(form):
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template("index.html")
+        return render_template("index.html", guest="neil")
     elif request.method == 'POST':
         errors = valid_form(request.form)
         if not errors:
             return "Valid is successful"
         else:
-            return render_template("index.html", errors=errors)
+            return render_template("index.html", errors=errors, guest="neil")
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
