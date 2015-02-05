@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>免费获取giffgaff电话卡——在英留学生最常用的SIM卡</h1>
+<p>
+    在这里可以放一些初步的介绍文字，如: <br>
+    giffgaff卡是怎样的，优点是什么 <br>
+    在中国留学生内非常流行 <br>
+    大致资费标准 <br>
+    这个活动页面的目的，大致流程是怎样的 <br>
+</p>
+
+{# 表单放在这里 #}
+{# 先处理表单验证的错误信息 #}
+{% if errors %}
+    <ul class=error_msg>
+        {% for error_msg in errors %}
+            <li>{{ error_msg }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<form method='POST' action='index'>
+    <p>邮箱：<input type="text" name="email"/></p>
+    <p>姓名：<input type="text" name="name"/></p>
+    <p>电话：<input type="text" name="phone"/></p>
+    <p>
+        Nano卡数量：
+        <select name="nano_qty">
+        <option value=0 selected="selected">0</option>
+        {% for i in range(1,9) %}
+            <option value={{i}}>{{i}}</option>
+        {% endfor %}
+        </select>
+    </p>
+    <p>
+        Micro卡数量：
+        <select name="micro_qty">
+        <option value=0 selected="selected">0</option>
+        {% for i in range(1,9) %}
+            <option value={{i}}>{{i}}</option>
+        {% endfor %}
+        </select>
+    </p>
+    <input type="submit" value="我要卡!"/>
+</form>
+
+{% endblock %}
