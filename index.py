@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, session
-import sqlite3, re, time, urllib2
+import sqlite3, re, time, urllib2, json
 
 app = Flask(__name__)
 app.debug = True
@@ -181,6 +181,17 @@ def admin():
         else:
             # 登陆验证失败
             return render_template("admin.html", errors = [u"输入错误"])
+
+# 后台json api
+@app.route('/admin/json', methods=['POST'])
+def adminJson():
+    username = request.form['username']
+    password = request.form['password']
+
+    if username == ADMIN and password == PASSWORD:
+        # 验证成功，获取所有数据
+        results = get_all_entries()[0]
+        return json.dumps(results)
 
 # 查询页面
 @app.route('/enquiry')
