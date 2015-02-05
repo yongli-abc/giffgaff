@@ -49,6 +49,7 @@
         {% endfor %}
         </select>
     </p>
+    <p>验证码：<input type="text" name="captcha" size="10"/><img src="http://captchator.com/captcha/image/{{ session['id'] }}"/></p>
     <input type="submit" value="我要卡"/>
 </form>
 

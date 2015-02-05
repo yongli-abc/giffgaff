@@ -11,7 +11,7 @@
     </ul>
 {% endif %}
 
-{% if not logged_in %}
+{% if not session['admin_flag'] %}
     <form action="admin" method="POST">
         <p>管理账号：<input type="text" name="username"/></p>
         <p>管理密码：<input type="password" name="password"/></p>

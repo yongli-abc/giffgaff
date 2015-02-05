@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, g, request, render_template
-import sqlite3, re
+from flask import Flask, g, request, render_template, session
+import sqlite3, re, time, urllib2
 
 app = Flask(__name__)
 app.debug = True
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 ##################
 # 一些全局配置变量
 ##################
@@ -12,7 +13,6 @@ ADMIN = "admin"
 PASSWORD = "admin"
 EMAIL_PATTERN = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
 PHONE_PATTERN = '(1)(3\d|4[5,7]|5[0-3,5-9]|8[0,2,3,6-9])\D*(\d{4})\D*(\d{4})$'
-LOGGED_IN_TOKEN = '#KJ123jsdf0)@#*jasdf'
 
 ##################
 # 这里放一些辅助函数
@@ -72,6 +72,12 @@ def valid_form(form):
     if not nano_qty and not micro_qty:
         errors.append(u"至少选择一张卡")
 
+    if not errors:
+        # 检查验证码
+        r = urllib2.urlopen("http://captchator.com/captcha/check_answer/%s/%s" % (session['id'], form['captcha']))
+        if not int(r.read()):
+            errors.append(u"验证码输入错误")
+
     return errors
 
 def save_record(record):
@@ -98,8 +104,16 @@ def save_record(record):
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
+        # 若首次访问，设置会话id
+        if not session.has_key('id'):
+            session['id'] = int(time.time()*10)
+
         return render_template("index.html")
     elif request.method == 'POST':
+        # 若获取POST请求时，未设置会话id，则使用get方法重新定向
+        if not session.has_key('id'):
+            return redirect(url_for('index'))
+
         errors = valid_form(request.form)
         if not errors:
             # 表单验证成功，保存数据
@@ -119,38 +133,51 @@ def index():
             # 表单验证失败，返回带错误信息的模版
             return render_template("index.html", errors=errors)
 
+def get_all_entries():
+    try:
+        # 获取所有条目
+        errors = []
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute("select * from entries")
+        results = cur.fetchall()
+        cur.close()
+
+        # 计算统计信息
+        stats = {}
+        stats['count'] = len(results)
+        stats['nano_total'] = sum([row[4] for row in results])
+        stats['micro_total'] = sum([row[5] for row in results])
+        print stats
+    except Exception as e:
+        errors.append(str(e))
+    finally:
+        conn.close()
+        return (results, stats, errors)
+
+
 # 后台页面
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'GET':
-        return render_template("admin.html")
+        if session.has_key("admin_flag"):
+            results, stats, errors = get_all_entries()
+            return render_template("admin.html", results=results, stats=stats, errors=errors)
+        else:
+            return render_template("admin.html")
 
     elif request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
         if username == ADMIN and password == PASSWORD:
-            # 输入正确，获取所有数据
-            try:
-                # 获取所有条目
-                errors = []
-                conn = connect_db()
-                cur = conn.cursor()
-                cur.execute("select * from entries")
-                results = cur.fetchall()
-                cur.close()
+            # 输入正确，设置session，下次直接进入后台
+            if not session.has_key("admin_flag"):
+                session['admin_flag'] = True
 
-                # 计算统计信息
-                stats = {}
-                stats['count'] = len(results)
-                stats['nano_total'] = sum([row[4] for row in results])
-                stats['micro_total'] = sum([row[5] for row in results])
-                print stats
-            except Exception as e:
-                errors.append(str(e))
-            finally:
-                conn.close()
+            results, stats, errors = get_all_entries()
 
-            return render_template("admin.html", logged_in = True, results=results, stats=stats, errors=errors)
+            return render_template("admin.html", results=results, stats=stats, errors=errors)
         else:
             # 登陆验证失败
             return render_template("admin.html", errors = [u"输入错误"])
