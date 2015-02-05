@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template
 import sqlite3, re
 
@@ -37,9 +37,9 @@ def valid_form(form):
     # 邮箱验证
     email = form['email']
     if not email:
-        my_errors.append("邮箱不能为空")
+        my_errors.append(u"邮箱不能为空")
     elif not re.match(EMAIL_PATTERN, email):
-        my_errors.append("请输入正确的邮箱")
+        my_errors.append(u"请输入正确的邮箱")
     else:
         # New validation
         pass
@@ -47,20 +47,20 @@ def valid_form(form):
     # 姓名验证
     name = form['name']
     if not name:
-        my_errors.append("姓名不能为空")
+        my_errors.append(u"姓名不能为空")
 
     # 电话验证
     phone = form['phone']
     if not phone:
-        my_errors.append("电话不能为空")
+        my_errors.append(u"电话不能为空")
     elif not re.match(PHONE_PATTERN, phone):
-        my_errors.append("请输入正确的电话")
+        my_errors.append(u"请输入正确的电话")
 
     # 卡数验证
     nano_qty = int(form['nano_qty'])
     micro_qty = int(form['micro_qty'])
     if not nano_qty and not micro_qty:
-        my_errors.append("至少选择一张卡")
+        my_errors.append(u"至少选择一张卡")
 
     return my_errors
 
