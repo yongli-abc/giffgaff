@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block body %}
+<p>输入您预留的邮箱地址，查询预定状态。</p>
+
+<!-- 处理表单错误信息 -->
+{% if errors %}
+    <ul class=error_msg>
+        {% for error_msg in errors %}
+            <li>{{ error_msg }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form action="enquiry" method="GET">
+    <p>邮箱：<input type="text" name="email"/></p>
+    <input type="submit" value="查询">
+</form>
+
+<!-- 查询结果 -->
+{% if result is defined %}
+    {% if result %}
+        <table>
+            <thead>
+                <tr>
+                    <td>邮箱</td>
+                    <td>姓名</td>
+                    <td>电话</td>
+                    <td>Nano卡数量</td>
+                    <td>Micro卡数量</td>
+                    <td>提交日期</td>
+                </tr>
+            </thead>
+            <tr>
+                <tbody>
+                    <td>{{result[1]}}</td>
+                    <td>{{result[2]}}</td>
+                    <td>{{result[3]}}</td>
+                    <td>{{result[4]}}</td>
+                    <td>{{result[5]}}</td>
+                    <td>{{result[6][:10]}}</td>
+                </tbody>
+            </tr>
+        </table>
+    {% else %}
+        <p>查询不到该邮箱的预定信息！</p>
+    {% endif %}
+{% endif %}
+
+{% endblock %}

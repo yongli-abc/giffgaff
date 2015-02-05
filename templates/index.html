@@ -3,7 +3,6 @@
 
 <h1>免费获取giffgaff电话卡——在英留学生最常用的SIM卡</h1>
 <p>
-    你好, {{ guest }}
     在这里可以放一些初步的介绍文字，如: <br>
     giffgaff卡是怎样的，优点是什么 <br>
     在中国留学生内非常流行 <br>
@@ -13,12 +12,20 @@
 
 {# 表单放在这里 #}
 {# 先处理表单验证的错误信息 #}
-{% if my_errors %}
+{% if errors %}
     <ul class=error_msg>
-        {% for my_error_msg in my_errors %}
-            <li>{{ my_error_msg }}</li>
+        {% for error_msg in errors %}
+            <li>{{ error_msg }}</li>
         {% endfor %}
     </ul>
+{% endif %}
+
+{# 提交成功后的信息 #}
+{% if ok_flag %}
+    <p>
+        提交成功！查看接下来的后续流程。<br>
+        你也可以在这里<a href="enquiry">查询</a>你的预定状态。
+    </p>
 {% endif %}
 <form method='POST' action='index'>
     <p>邮箱：<input type="text" name="email"/></p>
@@ -42,7 +49,7 @@
         {% endfor %}
         </select>
     </p>
-    <input type="submit" value="我要卡!"/>
+    <input type="submit" value="我要卡"/>
 </form>
 
 {% endblock %}
