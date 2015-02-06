@@ -47,7 +47,7 @@ def valid_form(form):
             cur.execute("select email from entries where email='%s'" % email)
             data = cur.fetchall()
             if len(data) > 0:
-                errors.append(u"该邮箱已经申请过，请勿重复申请")
+                errors.append(u"该邮箱已经申请过，请勿重复提交")
             cur.close()
         except Exception as e:
             errors.append(str(e))

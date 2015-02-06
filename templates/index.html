@@ -33,33 +33,47 @@
 
 <div class="docs-section" id="forms">
   <h6 class="docs-header">申请表</h6>
+
 {# 表单放在这里 #}
 {# 先处理表单验证的错误信息 #}
 {% if errors %}
-    <ul class=error_msg>
+  <div class="error-msg row">
+  <h6 class="docs-header error-msg">错误</h6>
+    <ul>
         {% for error_msg in errors %}
-            <li>{{ error_msg }}</li>
+            <div class="three columns">
+              <li>{{ error_msg }}</li>
+            </div>
         {% endfor %}
     </ul>
+  </div>
 {% endif %}
+
 
 {# 提交成功后的信息 #}
 {% if ok_flag %}
-    <p>
-        提交成功！查看接下来的后续流程。<br>
-        你也可以在这里<a href="enquiry">查询</a>你的预定状态。
-    </p>
+  <div class="success-msg row">
+  <h6 class="docs-header success-msg">成功</h6>
+    <ul>
+      <div class="twelve columns">
+        <li>提交成功！查看接下来的后续流程。你也可以在这里<a href="enquiry">查询</a>你的预定状态。</li>
+      </div>
+    </ul>
+  </div>
 {% endif %}
+
+<br>
+
 <form method='POST' action='index'>
 
   <label>邮箱</label>
-  <input class="u-full-width" type="text" name="email" placeholder="你的邮箱"/>
+  <input class="u-full-width" type="text" name="email" placeholder="后续通知将会发放到你的邮箱里"/>
 
   <label>姓名</label>
-  <input class="u-full-width" type="text" name="name" placeholder="你的姓名"/>
+  <input class="u-full-width" type="text" name="name"/>
 
   <label>电话</label>
-  <input class="u-full-width" type="text" name="phone" placeholder="你的电话"/>
+  <input class="u-full-width" type="text" name="phone" placeholder="手机号码将会作为日后领卡的凭证"/>
 
   <div class="row">
     <div class="eight columns">
