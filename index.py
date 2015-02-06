@@ -66,7 +66,7 @@ def valid_form(form):
     if not phone:
         errors.append(u"电话不能为空")
     elif not re.match(PHONE_PATTERN, phone):
-        errors.append(u"请输入正确的电话")
+        errors.append(u"请输入正确的电话，11位国内号码")
 
     # 卡数验证
     nano_qty = int(form['nano_qty'])
