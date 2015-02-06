@@ -1,6 +1,6 @@
 ## 前段
- - [ ] index上面放一个giffgaff的大logo
- - [ ] 添加一些icon
+ - [x] index上面放一个giffgaff的大logo
+ - [x] 添加一些icon
  - [ ] 重新布局表格，更加紧凑一点
  - [x] 强调表格错误信息，使其更加醒目，如使用粉红色底纹等
  - [x] 添加footer
