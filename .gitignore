@@ -1,4 +1,2 @@
 .DS_Store
-*.db
 local_backup
-tmp
