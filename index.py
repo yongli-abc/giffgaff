@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, session
-import sqlite3, re, time, urllib2, json
+from captcha.image import ImageCaptcha
+import sqlite3, re, time, urllib2, json, random
+
 
 app = Flask(__name__)
 app.debug = True
@@ -74,8 +76,7 @@ def valid_form(form):
 
     if not errors:
         # 检查验证码
-        r = urllib2.urlopen("http://captchator.com/captcha/check_answer/%s/%s" % (session['id'], form['captcha']))
-        if not int(r.read()):
+        if session['captcha'] != form['captcha']:
             errors.append(u"验证码输入错误")
 
     return errors
@@ -95,43 +96,6 @@ def save_record(record):
     finally:
         conn.close()
         return errors
-
-##################
-# 下面均为视图处理函数
-##################
-# 首页
-@app.route('/')
-@app.route('/index', methods=['GET', 'POST'])
-def index():
-    if request.method == 'GET':
-        # 若首次访问，设置会话id
-        if not session.has_key('id'):
-            session['id'] = int(time.time()*10)
-
-        return render_template("index.html")
-    elif request.method == 'POST':
-        # 若获取POST请求时，未设置会话id，则使用get方法重新定向
-        if not session.has_key('id'):
-            return redirect(url_for('index'))
-
-        errors = valid_form(request.form)
-        if not errors:
-            # 表单验证成功，保存数据
-            record = {
-                'email':request.form['email'],
-                'name':request.form['name'],
-                'phone':request.form['phone'],
-                'nano_qty':int(request.form['nano_qty']),
-                'micro_qty':int(request.form['micro_qty']),
-            }
-            errors = save_record(record)
-            if not errors:
-                return render_template("index.html", ok_flag=True)
-            else:
-                return render_template("index.html", errors=errors)
-        else:
-            # 表单验证失败，返回带错误信息的模版
-            return render_template("index.html", errors=errors)
 
 def get_all_entries():
     try:
@@ -155,6 +119,65 @@ def get_all_entries():
         conn.close()
         return (results, stats, errors)
 
+def generate_captcha():
+    '''
+    验证码生成函数。调用后讲生成一个4位数字的随机字符串captcha_str
+    根据该字符串生成图片，存放在/static/captcha.png
+    并设置session['captcha'] = captcha_str
+    '''
+    # 生成验证码
+    captch_str = "".join([str(random.choice(range(0,10))) for i in range(4)])
+    session['captcha'] = captch_str
+    image = ImageCaptcha(width=100, height=70, font_sizes=(50,50,50))
+    image.write(captch_str, "static/captcha.png")
+
+    pass
+##################
+# 下面均为视图处理函数
+##################
+
+# 控制不缓存
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
+
+# 首页
+@app.route('/')
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        # 验证码生成
+        generate_captcha()
+        return render_template("index.html")
+
+    elif request.method == 'POST':
+        # 先做表单验证，再重新生成验证码，避免session['captcha']被覆盖
+        errors = valid_form(request.form)
+        generate_captcha()
+
+        if not errors:
+            # 表单验证成功，保存数据
+            record = {
+                'email':request.form['email'],
+                'name':request.form['name'],
+                'phone':request.form['phone'],
+                'nano_qty':int(request.form['nano_qty']),
+                'micro_qty':int(request.form['micro_qty']),
+            }
+            errors = save_record(record)
+            if not errors:
+                return render_template("index.html", ok_flag=True)
+            else:
+                return render_template("index.html", errors=errors)
+        else:
+            # 表单验证失败，返回带错误信息的模版
+            return render_template("index.html", errors=errors)
 
 # 后台页面
 @app.route('/admin', methods=['GET', 'POST'])
