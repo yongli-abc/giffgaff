@@ -1,7 +1,7 @@
 .container {
   max-width: 800px; }
 .header {
-  margin-top: 6rem;
+  margin-top: 3rem;
   text-align: center; }
 .value-prop {
   margin-top: 0rem; }
@@ -15,7 +15,7 @@
   font-weight: 600; }
 .docs-section {
   border-top: 1px solid #eee;
-  padding: 4rem 0;
+  padding: 1.5rem 0;
   margin-bottom: 0;}
 .value-img {
   display: block;
@@ -97,7 +97,7 @@
   .example-grid .columns {
     margin-bottom: 1.5rem; }
   .docs-section {
-    padding: 6rem 0; }
+    padding: 2.5rem 0; }
   .example-send-yourself-copy {
     float: right;
     margin-top: 12px; }
