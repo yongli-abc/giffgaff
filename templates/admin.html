@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-<p>该后台页面上线前应从导航栏中移除，隐藏入口。</p>
+
+<div class="docs-section">
 
 {# 先处理错误信息 #}
 {% if errors %}
@@ -20,7 +21,7 @@
 {% elif not results%}
     <p>还没有任何订单</p>
 {% else %}
-    <h2>统计信息</h2>
+    <h6 class="docs-header">统计信息</h6>
     <table>
         <thead>
             <tr>
@@ -38,7 +39,7 @@
         </tbody>
     </table>
 
-    <h2>详细信息</h2>
+    <h6 class="docs-header">详细信息</h6>
     <table>
         <thead>
             <tr>
@@ -66,3 +67,5 @@
 {% endif %}
 
 {% endblock %}
+
+</div>

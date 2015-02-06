@@ -1,15 +1,38 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>免费获取giffgaff电话卡——在英留学生最常用的SIM卡</h1>
-<p>
-    在这里可以放一些初步的介绍文字，如: <br>
-    giffgaff卡是怎样的，优点是什么 <br>
-    在中国留学生内非常流行 <br>
-    大致资费标准 <br>
-    这个活动页面的目的，大致流程是怎样的 <br>
-</p>
+<section class="header">
+  <h2 class="title">免费获取giffgaff电话卡，就在这里。</h2>
+  <br><br><br>
+  <a class="button button-primary" id="head-button" href="#intro">了解详情</a>
+  &nbsp;&nbsp;&nbsp;
+  <a class="button button-primary" id="head-button" href="#forms">直接领取</a>
+  <div class="value-props row">
+    <div class="four columns value-prop">
+      利物浦中国学生使用最多的电话卡
+    </div>
+    <div class="four columns value-prop">
+      往国内打电话费用仅需0.2元/分钟
+    </div>
+    <div class="four columns value-prop">
+      giffgaff网间电话短信全免费
+    </div>
+  </div>
+</section>
 
+<div class="docs-section" id="intro">
+  <h6 class="docs-header">Giffgaff简介</h6>
+  <p>
+      在这里可以放一些初步的介绍文字，如: <br>
+      giffgaff卡是怎样的，优点是什么 <br>
+      在中国留学生内非常流行 <br>
+      大致资费标准 <br>
+      这个活动页面的目的，大致流程是怎样的 <br>
+  </p>
+</div>
+
+<div class="docs-section" id="forms">
+  <h6 class="docs-header">申请表</h6>
 {# 表单放在这里 #}
 {# 先处理表单验证的错误信息 #}
 {% if errors %}
@@ -28,29 +51,46 @@
     </p>
 {% endif %}
 <form method='POST' action='index'>
-    <p>邮箱：<input type="text" name="email"/></p>
-    <p>姓名：<input type="text" name="name"/></p>
-    <p>电话：<input type="text" name="phone"/></p>
-    <p>
-        Nano卡数量：
-        <select name="nano_qty">
+
+  <label>邮箱</label>
+  <input class="u-full-width" type="text" name="email" placeholder="你的邮箱"/>
+
+  <label>姓名</label>
+  <input class="u-full-width" type="text" name="name" placeholder="你的姓名"/>
+
+  <label>电话</label>
+  <input class="u-full-width" type="text" name="phone" placeholder="你的电话"/>
+
+  <div class="row">
+    <div class="eight columns">
+      <label>Nano卡数量</label>
+      <select class="u-full-width"  name="nano_qty">
         <option value=0 selected="selected">0</option>
         {% for i in range(1,9) %}
             <option value={{i}}>{{i}}</option>
         {% endfor %}
-        </select>
-    </p>
-    <p>
-        Micro卡数量：
-        <select name="micro_qty">
-        <option value=0 selected="selected">0</option>
-        {% for i in range(1,9) %}
-            <option value={{i}}>{{i}}</option>
-        {% endfor %}
-        </select>
-    </p>
-    <p>验证码：<input type="text" name="captcha" size="10"/><img src="http://captchator.com/captcha/image/{{ session['id'] }}"/></p>
-    <input type="submit" value="我要卡"/>
+      </select>
+      <label>Micro卡数量</label>
+      <select class="u-full-width" name="micro_qty">
+      <option value=0 selected="selected">0</option>
+      {% for i in range(1,9) %}
+          <option value={{i}}>{{i}}</option>
+      {% endfor %}
+      </select>
+    </div>
+    <div class="two columns">
+      <label>验证码</label>
+      <div class="image-cropper">
+        <img src="http://captchator.com/captcha/image/{{ session['id'] }}"/>
+      </div>
+      <input class="bottom-down" type="text" name="captcha" size="10"/>
+    </div>
+    <div class="two columns">
+      <br>
+      <input class="button-primary bottom-down" id="form-button" type="submit" value="提 交订 单">
+    </div>
+  </div>
 </form>
 
+</div>
 {% endblock %}

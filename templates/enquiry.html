@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
+
+<div class="docs-section">
+<h6 class="docs-header">订单查询</h6>
 <p>输入您预留的邮箱地址，查询预定状态。</p>
 
 <!-- 处理表单错误信息 -->
@@ -12,7 +15,8 @@
 {% endif %}
 
 <form action="enquiry" method="GET">
-    <p>邮箱：<input type="text" name="email"/></p>
+    <label>邮箱</label>
+    <input type="text" name="email"/>
     <input type="submit" value="查询">
 </form>
 
@@ -47,3 +51,5 @@
 {% endif %}
 
 {% endblock %}
+
+</div>

@@ -1,17 +1,38 @@
 <!DOCTYPE HTML>
 <html>
-    <header>
-        <meta charset="utf-8">
-        <title>免费领取giffgaff卡</title>
-    </header>
-    <nav>
-        <a href="index">介绍</a>
-        <a href="enquiry">查询</a>
-        <a href="about">关于</a>
-        <a href="admin">管理</a>
-    </nav>
-    <body>
-    {% block body %}
-    {% endblock %}
-    </body>
+<head>
+  <meta charset="utf-8">
+  <title>免费领取giffgaff卡</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/normalize.css') }}">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/skeleton.css') }}">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/custom.css') }}">
+  <link rel="icon" type="image/ico" href= "{{ url_for('static',filename='icon/favicon.ico') }}">
+</head>
+
+<body class="code-snippets-visible">
+<div class="container">
+
+  <div class="navbar-spacer"></div>
+
+  <nav class="navbar">
+    <div class="container">
+      <ul class="navbar-list">
+        <li class="navbar-item"><a class="navbar-link" href="index">介绍</a></li>
+        <li class="navbar-item"><a class="navbar-link" href="enquiry">查询</a></li>
+        <li class="navbar-item"><a class="navbar-link" href="about">关于</a></li>
+        <li class="navbar-item"><a class="navbar-link" href="admin">管理</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  {% block body %}
+  {% endblock %}
+  
+</div>
+</body>
 </htm>
