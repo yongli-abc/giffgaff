@@ -60,13 +60,11 @@
     {# 表单放在这里 #}
     {# 先处理表单验证的错误信息 #}
     {% if errors %}
-    <div class="error-msg row">
+    <div class="error-msg">
       <h6 class="docs-header error-msg">错误</h6>
       <ul>
           {% for error_msg in errors %}
-              <div class="three columns">
-                <li>{{ error_msg }}</li>
-              </div>
+            <li>{{ error_msg }}</li>
           {% endfor %}
       </ul>
     </div>
@@ -75,18 +73,15 @@
 
     {# 提交成功后的信息 #}
     {% if ok_flag %}
-    <div class="success-msg row">
+    <div class="success-msg">
       <h6 class="docs-header success-msg">成功</h6>
       <ul>
-        <div class="twelve columns">
-          <li>提交成功！查看接下来的后续流程。你也可以在这里<a href="enquiry">查询</a>你的预定状态。</li>
-        </div>
+        <li>提交成功！查看接下来的后续流程。你也可以在这里<a href="enquiry">查询</a>你的预定状态。</li>
       </ul>
     </div>
     {% endif %}
 
-    <br>
-
+    
     <form method='POST' action='index#forms'>
 
       <label>邮箱</label>
