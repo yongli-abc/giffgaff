@@ -2,3 +2,4 @@
 local_backup
 *.py[cod]
 static/captcha.png
+tmp/data.db
