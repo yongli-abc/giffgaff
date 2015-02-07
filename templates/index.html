@@ -43,7 +43,7 @@
     </P>
 
     <h6>
-        注：更多信息请参照<a href="https://giffgaff.com/">giffgaff官网</a>。
+        注：更多信息请参照<a href="https://giffgaff.com/" target="_blank">giffgaff官网</a>。
     </h6>
 
 
@@ -82,7 +82,7 @@
       <h6 class="docs-header success-msg">成功</h6>
       <ul>
         <li>
-            你可以在<a href="enquiry">这里</a>查询预定状态。<br>
+            你可以在<a href="enquiry" target="_blank">这里</a>查询预定状态。<br>
             重新提交需在查询页面删除。<br>
             觉得很棒？帮助我们<a href="#share">分享</a>吧！
         </li>
@@ -225,5 +225,32 @@
 
 <div class="docs-section" id="share">
     <h6 class="docs-header">帮助分享</h6>
+    <p>是否觉得免费giffgaff卡很酷炫呢？请点击下面的按钮，把这喜大普奔的消息分享给你的朋友吧！</p>
+
+    <!-- Baidu Button BEGIN -->
+    <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+        <a class="bds_tsina">微博</a>
+        <a class="bds_renren">人人</a>
+        <!-- <a class="bds_weixin">微信</a> -->
+        <a class="bds_tqq">腾讯</a>
+        <a class="bds_qzone">QQ</a>
+        <a class="bds_fbook">Facebook</a>
+        <a class="bds_twi">Twitter</a>
+        <span class="bds_more">更多</span>
+    </div>
+    <br>
+    <script type="text/javascript" id="bdshare_js" data="type=tools&mini=1" ></script>
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script type="text/javascript">
+        //在这里定义bds_config
+        var bds_config = {'bdText':'利物浦中国留学生最常用的电话卡：giffgaff电话卡，现在对西浦2+2同学们免费发放啦！',
+        'bdPic':'http://giffgaff.duapp.com/static/image/giffgaff-logo.png',
+        'wbUid':'2327892814'}
+
+
+        document.getElementById('bdshell_js').src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000);
+    </script>
+    <!-- Baidu Button END -->
+
 </div>
 {% endblock %}
