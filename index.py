@@ -272,6 +272,10 @@ def enquiry():
 
         return "Going to delete"
 
+# 激活页面
+@app.route('/activate')
+def activate():
+    return render_template("activate.html")
 
 # 关于页面
 @app.route('/about')
