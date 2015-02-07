@@ -1,4 +1,4 @@
 .DS_Store
 local_backup
 *.py[cod]
-captcha*
+static/captcha.png

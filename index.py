@@ -220,10 +220,12 @@ def adminJson():
 @app.route('/enquiry')
 def enquiry():
     enquiry_email = request.args.get('email')
+    delete = request.args.get('delete')
+    print delete
     if not enquiry_email:
         # 给出初始查询页面提示
         return render_template("enquiry.html")
-    else:
+    elif not delete:
         # 尝试查询
         result = []
         errors = []
@@ -239,7 +241,37 @@ def enquiry():
             errors.append(str(e))
         finally:
             conn.close()
-            return render_template("enquiry.html", result=result, errors=errors)
+            if len(result) > 0:
+                # 有查询结果
+                return render_template("enquiry.html", result=result, errors=errors)
+            else:
+                # 无查询结果
+                return render_template("enquiry.html", main_msg=u"查询不到该邮箱的预定信息！", msg_type="error", errors=errors)
+
+    elif delete:
+        # 进行删除
+        errors = []
+        try:
+            conn = connect_db()
+            cur = conn.cursor()
+            cur.execute("delete from entries where email='%s'" % enquiry_email)
+            cur.close()
+        except Exception as e:
+            errors.append(str(e))
+        finally:
+            conn.commit()
+            conn.close()
+            if cur.rowcount > 0:
+                # 删除成功
+                return render_template("enquiry.html", main_msg=u"预定信息删除成功！", msg_type="success", errors=errors)
+                pass
+            else:
+                # 没有数据被影响
+                return render_template("enquiry.html", main_msg=u"无法删除不存在的信息！", msg_type="error", errors=errors)
+
+
+        return "Going to delete"
+
 
 # 关于页面
 @app.route('/about')

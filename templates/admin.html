@@ -5,14 +5,17 @@
 
 {# 先处理错误信息 #}
 {% if errors %}
-    <ul class=error_msg>
+<div calss="error-msg">
+    <ul>
         {% for error_msg in errors %}
             <li>{{ error_msg }}</li>
         {% endfor %}
     </ul>
+</div>
 {% endif %}
 
 {% if not session['admin_flag'] %}
+    <!-- 未登录为管理员，给出登陆表单 -->
     <form action="admin" method="POST">
         <p>管理账号：<input type="text" name="username"/></p>
         <p>管理密码：<input type="password" name="password"/></p>
@@ -46,9 +49,9 @@
                 <td>邮箱</td>
                 <td>姓名</td>
                 <td>电话</td>
-                <td>Nano卡数量</td>
-                <td>Micro卡数量</td>
-                <td>提交时间</td>
+                <td>Nano</td>
+                <td>Micro</td>
+                <td>时间</td>
             </tr>
         </thead>
         {% for result in results%}
