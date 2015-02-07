@@ -252,20 +252,29 @@
     bottom: 0px;
   }
 
+  .captcha {
+    position: relative;
+    padding: 0;
+  }
+
+  .captcha input{
+    position: absolute;
+    bottom: 0px;
+    padding-bottom: 0;
+    margin-bottom: 0.5em;
+    width: 48%;
+  }
+
   .middle-to {
     position: absolute;
     bottom: auto;
   }
 
   #head-button {
-    font-size: 1em;
   }
 
   #form-button {
-    font-size: 1em;
-    width: 108px;
-    height: 108px;
-    white-space: normal;
+    width: 100%;
   }
 
   .error-msg {

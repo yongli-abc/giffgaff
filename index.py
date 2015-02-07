@@ -128,7 +128,7 @@ def generate_captcha():
     # 生成验证码
     captch_str = "".join([str(random.choice(range(0,10))) for i in range(4)])
     session['captcha'] = captch_str
-    image = ImageCaptcha(width=100, height=70, font_sizes=(50,50,50))
+    image = ImageCaptcha(width=118, height=38, font_sizes=(37,37,37))
     image.write(captch_str, "static/captcha.png")
 
     pass
