@@ -7,11 +7,13 @@
 
 <!-- 处理表单错误信息 -->
 {% if errors %}
-    <ul class=error_msg>
+<div class="error-msg">
+    <ul>
         {% for error_msg in errors %}
             <li>{{ error_msg }}</li>
         {% endfor %}
     </ul>
+</div>
 {% endif %}
 
 <form action="enquiry" method="GET">
@@ -21,33 +23,40 @@
 </form>
 
 <!-- 查询结果 -->
-{% if result is defined %}
-    {% if result %}
-        <table>
-            <thead>
-                <tr>
-                    <td>邮箱</td>
-                    <td>姓名</td>
-                    <td>电话</td>
-                    <td>Nano卡数量</td>
-                    <td>Micro卡数量</td>
-                    <td>提交日期</td>
-                </tr>
-            </thead>
+{% if main_msg %}
+    <div class="{{ msg_type }}-msg">
+        <ul>
+            <li>{{ main_msg }}</li>
+        </ul>
+    </div>
+{% endif %}
+
+{% if result %}
+    如果您提交的信息有误，或者想更改提单，请删除后重新申请。
+    <table>
+        <thead>
             <tr>
-                <tbody>
-                    <td>{{result[1]}}</td>
-                    <td>{{result[2]}}</td>
-                    <td>{{result[3]}}</td>
-                    <td>{{result[4]}}</td>
-                    <td>{{result[5]}}</td>
-                    <td>{{result[6][:10]}}</td>
-                </tbody>
+                <td>邮箱</td>
+                <td>姓名</td>
+                <td>电话</td>
+                <td>Nano卡数量</td>
+                <td>Micro卡数量</td>
+                <td>提交日期</td>
+                <td>操作</td>
             </tr>
-        </table>
-    {% else %}
-        <p>查询不到该邮箱的预定信息！</p>
-    {% endif %}
+        </thead>
+        <tr>
+            <tbody>
+                <td>{{result[1]}}</td>
+                <td>{{result[2]}}</td>
+                <td>{{result[3]}}</td>
+                <td>{{result[4]}}</td>
+                <td>{{result[5]}}</td>
+                <td>{{result[6][:10]}}</td>
+                <td><a href="enquiry?email={{result[1]|escape}}&amp;delete=1">删除</a></td>
+            </tbody>
+        </tr>
+    </table>
 {% endif %}
 
 {% endblock %}
