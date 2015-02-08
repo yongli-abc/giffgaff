@@ -335,8 +335,9 @@
     top: 0;
   }
 
-  #bds {
-    float: right;
+  #bdshare {
+    float: right !important;
+    font-size: 1em !important;
   }
 
 
