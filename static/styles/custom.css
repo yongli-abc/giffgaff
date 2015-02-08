@@ -334,9 +334,10 @@
     position: fixed;
   }
 
-  #bdshare {
-    
+  #bds {
+    float: right;
   }
+
 
 /* latin */
 @font-face {
