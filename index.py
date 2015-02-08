@@ -277,6 +277,11 @@ def activate():
 def about():
     return render_template("about.html")
 
+# 404错误页面
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
 if __name__ == "__main__":
     # 本地测试环境
     app.run()
