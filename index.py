@@ -131,22 +131,17 @@ def generate_captcha():
     image = ImageCaptcha(width=118, height=38, font_sizes=(37,37,37))
     image.write(captch_str, "static/captcha.png")
 
-    pass
+@app.template_filter('randSuffix')
+def reverse_filter(original_url):
+    '''
+    为验证码图片请求地址末尾加上随机字符串，确保图片不会被缓存，每次都会请求最新图片
+    '''
+    suffix = str(int(time.time()*100))
+    return original_url + "?" + suffix
+
 ##################
 # 下面均为视图处理函数
 ##################
-
-# 控制不缓存
-@app.after_request
-def add_header(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=0'
-    return response
-
 # 首页
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
@@ -281,6 +276,11 @@ def activate():
 @app.route('/about')
 def about():
     return render_template("about.html")
+
+# 404错误页面
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 if __name__ == "__main__":
     # 本地测试环境

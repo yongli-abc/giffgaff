@@ -126,7 +126,7 @@
       <div class="row captcha">
         <div class="six columns">
         <label>验证码</label>
-          <img src="{{ url_for('static',filename='captcha.png') }}"/>
+          <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
         </div>
         <div class="six columns">
           <input class="u-full-width" type="text" name="captcha"/>
