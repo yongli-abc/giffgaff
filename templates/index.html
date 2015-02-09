@@ -9,6 +9,7 @@
   <a class="button button-primary" id="head-button" href="#intro">快去看看</a>
   &nbsp;&nbsp;&nbsp;
   <a class="button button-primary" id="head-button" href="#forms">直接申请</a>
+  <span id="detail"></span>
   <div class="value-props row">
     <div class="four columns value-prop">
       <img class="front-logo" src="/static/image/multiple.png"  alt="giffgaff logo" />
@@ -30,120 +31,125 @@
 
 
 
-<div class="row">
-  <div class="docs-section eight columns" id="intro">
-
-
-    <h6 class="docs-header">giffgaff简介</h6>
-    <p>
-      giffgaff 是英国的一家移动虚拟网络运营商，使用 O2 的网络，是 O2 的全资公司。<br>
-      g 卡的一个卖点是：g 卡之间相互发短信和打电话都是免费的。<br>
-      giffgaff 也是在利物浦的中国留学生用的最多的卡。<br>
-      现在申请，激活后免费领取卡内自带 &pound;5 话费。<br>
-      giffgaff 现已支持 4G 网络，激活时选择 4G 套餐即可享用飞速网络。<br>
-      国内激活后立刻拥有可用的英国电话号码，即使在转机时也能向父母报平安！
-    </P>
-
-    <h6>
-        注：更多信息请参照 <a href="https://giffgaff.com/" target="_blank">giffgaff 官网</a>。
-    </h6>
-
-
-
-    <h6 class="docs-header">发卡流程</h6>
-    <ol>
-      <li>在右侧的申请表填写信息申请，邮箱将作为查询凭证，请确保正确。</li>
-      <li>在五月初我们会通过邮箱通知具体发放时间和地点（六月初，西浦）</li>
-      <li>在指定时间和地点凭手机号码领卡</li>
-      <li>在线激活，获得额外 &pound;5 话费</li>
-    </ol>
-    <p>
-        有任何困惑？立刻<a href="about">联系我们</a>！<br>
-        针对非西浦学生，后续我们将推出邮递服务，敬请关注！
-    </p>
-
-
-  </div>
-
-  <div class="docs-section four columns" id="forms">
-    <h6 class="docs-header">申请表</h6>
-
-    {# 表单放在这里 #}
-    {# 先处理表单验证的错误信息 #}
-    {% if errors %}
-    <div class="error-msg">
-      <h6 class="docs-header error-msg">错误</h6>
-      <ul>
-          {% for error_msg in errors %}
-            <li>{{ error_msg }}</li>
-          {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-
+<div class="docs-section">
     {# 提交成功后的信息 #}
     {% if ok_flag %}
     <div class="success-msg">
       <h6 class="docs-header success-msg">成功</h6>
       <ul>
+        <li>已向您发送确认邮件。您无需任何操作，但若未收到邮件，则可能邮箱填写错误。</li>
         <li>
-            你可以在<a href="enquiry" target="_blank">这里</a>查询预定状态。<br>
-            重新提交需在查询页面删除。<br>
-            觉得很棒？帮助我们<a href="#share">分享</a>吧！
+            你可以在 <a href="enquiry" target="_blank">这里</a> 查询预定状态。重新提交需在查询页面先删除订单。
         </li>
+        <li>觉得很棒？帮助我们 <a href="#share">分享</a> 吧！</li>
       </ul>
     </div>
     {% endif %}
+    <div class="row">
+      <div class="eight columns" id="intro">
+        <h6 class="docs-header">giffgaff简介</h6>
+        <p>
+          giffgaff 是英国的一家移动虚拟网络运营商，使用 O2 的网络，是 O2 的全资公司。<br>
+          g 卡的一个卖点是：g 卡之间相互发短信和打电话都是免费的。<br>
+          giffgaff 也是在利物浦的中国留学生用的最多的卡。<br>
+          现在申请，激活后免费领取卡内自带 &pound;5 话费。<br>
+          giffgaff 现已支持 4G 网络，激活时选择 4G 套餐即可享用飞速网络。<br>
+          国内激活后立刻拥有可用的英国电话号码，即使在转机时也能向父母报平安！
+        </P>
 
+        <h6>
+            注：更多信息请参照 <a href="https://giffgaff.com/" target="_blank">giffgaff 官网</a>。
+        </h6>
 
-    <form method='POST' action='index#forms'>
+        <h6 class="docs-header">发卡流程</h6>
+        <p>我们提供两种发卡选择：</p>
 
-      <label>邮箱</label>
-      <input class="u-full-width" type="text" name="email"/>
+        <u>现场发卡</u>（限西浦）
+        <ol>
+            <li>填写右侧表单，邮箱将作为查询凭证，也将接收以后的通知，请正确填写。</li>
+            <li>五月初会通过邮箱通知发放时间和地点，预计为六月初在西浦发放。</li>
+            <li>在指定时间，以您的手机号为凭证领卡，请确保手机号填写正确。</li>
+        </ol>
 
-      <label>姓名</label>
-      <input class="u-full-width" type="text" name="name"/>
+        <u>快递发卡</u>
+        <ol>
+          <li>我们将在 2 月中旬运一批卡回国，可以用快递发卡给您。</li>
+          <li>如果您希望更快拿到卡，请不要填写表单。点这里利用淘宝来购买。</li>
+          <li>为避免不必要的浪费，我们将收取快递费 6 元 / 单。
+        </ol>
 
-      <label>电话</label>
-      <input class="u-full-width" type="text" name="phone"/>
+        <p>
+            我们推荐西浦同学现场拿卡。初次激活选取的套餐即刻开始计费，一般出国前再激活即可。<br>
+            拿到卡后请参考我们的 <a href="activate">教程</a> 来激活。激活后可以获取 giffgaff 赠送的额外 &pound;5 话费。
+        </p>
 
-      <div class="row">
-        <div class="six columns">
-          <label>Nano 卡数量</label>
-          <select class="u-full-width"  name="nano_qty">
-            <option value=0 selected="selected">0</option>
-            {% for i in range(1,9) %}
-                <option value={{i}}>{{i}}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="six columns">
-          <label>Micro 卡数量</label>
-          <select class="u-full-width" name="micro_qty">
-          <option value=0 selected="selected">0</option>
-          {% for i in range(1,9) %}
-              <option value={{i}}>{{i}}</option>
-          {% endfor %}
-          </select>
-        </div>
+        有任何困惑？立刻 <a href="about">联系我们</a> ！<br>
       </div>
 
-      <div class="row captcha">
-        <div class="six columns">
-        <label>验证码</label>
-          <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
+      <div class="four columns" id="forms">
+        <h6 class="docs-header">申请表</h6>
+
+        {# 表单放在这里 #}
+        {# 先处理表单验证的错误信息 #}
+        {% if errors %}
+        <div class="error-msg">
+          <h6 class="docs-header error-msg">错误</h6>
+          <ul>
+              {% for error_msg in errors %}
+                <li>{{ error_msg }}</li>
+              {% endfor %}
+          </ul>
         </div>
-        <div class="six columns">
-          <input class="u-full-width" type="text" name="captcha"/>
-        </div>
+        {% endif %}
+
+        <form method='POST' action='index#detail'>
+
+          <label>邮箱</label>
+          <input class="u-full-width" type="text" name="email"/>
+
+          <label>姓名</label>
+          <input class="u-full-width" type="text" name="name"/>
+
+          <label>电话</label>
+          <input class="u-full-width" type="text" name="phone"/>
+
+          <div class="row">
+            <div class="six columns">
+              <label>Nano 卡数量</label>
+              <select class="u-full-width"  name="nano_qty">
+                <option value=0 selected="selected">0</option>
+                {% for i in range(1,5) %}
+                    <option value={{i}}>{{i}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="six columns">
+              <label>Micro 卡数量</label>
+              <select class="u-full-width" name="micro_qty">
+              <option value=0 selected="selected">0</option>
+              {% for i in range(1,5) %}
+                  <option value={{i}}>{{i}}</option>
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row captcha">
+            <div class="six columns">
+            <label>验证码</label>
+              <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
+            </div>
+            <div class="six columns">
+              <input class="u-full-width" type="text" name="captcha"/>
+            </div>
+          </div>
+          <br>
+          <input class="button-primary" id="form-button" type="submit" value="提交订单">
+        </form>
+
       </div>
-      <br>
-      <input class="button-primary" id="form-button" type="submit" value="提交订单">
-    </form>
 
-  </div>
-
+    </div>
 </div>
 
 <div class="docs-section" id="price">
@@ -208,9 +214,8 @@
           <tr><td>&pound;18</td><td>2,000</td><td>无限</td><td>无限</td></tr>
         </tbody>
       </table>
-      注：1p=&yen0.1，&pound;1=&yen10
-    </div>
 
+    </div>
 
     <div class="six columns">
       <h6 class="docs-header">4G套餐</h6>
@@ -227,6 +232,7 @@
     </div>
 
   </div>
+  注：1p = &yen0.1，&pound;1 = &yen10。G 卡之间电话、短信全免费。
 </div>
 
 <div class="docs-section" id="share">
