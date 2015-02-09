@@ -81,7 +81,7 @@ def valid_form(form):
 
     return errors
 
-def save_record(record):
+def save_record(form):
     '''
     将验证成功的记录保存到sqlite中
     若数据库操作过程发生异常，捕获后将错误信息添加到errors中进行返回
@@ -89,7 +89,7 @@ def save_record(record):
     errors = []
     try:
         conn = connect_db()
-        conn.execute("insert into entries (email, name, phone, nano_qty, micro_qty) values (?, ?, ?, ?, ?)", (record['email'], record['name'], record['phone'], record['nano_qty'], record['micro_qty']))
+        conn.execute("insert into entries (email, name, phone, nano_qty, micro_qty) values (?, ?, ?, ?, ?)", (form['email'], form['name'], form['phone'], form['nano_qty'], form['micro_qty']))
         conn.commit()
     except Exception as e:
         errors.append(str(e))
@@ -155,17 +155,9 @@ def index():
         # 先做表单验证，再重新生成验证码，避免session['captcha']被覆盖
         errors = valid_form(request.form)
         generate_captcha()
-
         if not errors:
             # 表单验证成功，保存数据
-            record = {
-                'email':request.form['email'],
-                'name':request.form['name'],
-                'phone':request.form['phone'],
-                'nano_qty':int(request.form['nano_qty']),
-                'micro_qty':int(request.form['micro_qty']),
-            }
-            errors = save_record(record)
+            errors = save_record(request.form)
             if not errors:
                 return render_template("index.html", ok_flag=True)
             else:
