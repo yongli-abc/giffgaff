@@ -10,7 +10,7 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 ##################
 # 一些全局配置变量
 ##################
-DATABASE = "tmp/data.db"
+DATABASE = "tmp/data.sqlite"
 ADMIN = "admin"
 PASSWORD = "admin"
 EMAIL_PATTERN = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
