@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, session
 from captcha.image import ImageCaptcha
-import sqlite3, re, time, urllib2, json, random
+import sqlite3, re, time, urllib2, json, random, sys
+sys.path.insert(0, './mail')
+from mail import send_email
 
 
 app = Flask(__name__)
@@ -159,6 +161,11 @@ def index():
             # 表单验证成功，保存数据
             errors = save_record(request.form)
             if not errors:
+                # 发送确认邮件
+                receiver_list = [(request.form['email'], request.form['name'])]
+                subject = 'giffgaff 订单确认'
+                text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
+                send_email(receiver_list, subject, text)
                 return render_template("index.html", ok_flag=True)
             else:
                 return render_template("index.html", errors=errors)
