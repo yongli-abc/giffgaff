@@ -385,6 +385,26 @@
     top: 0;
   }
 
+  .navbar-guide {
+    position: fixed;
+    top: 33%;
+    left: 3%;
+    text-align: left;
+  }
+
+  .navbar-guide div ul {
+    list-style: none;
+  }
+
+  .navbar-link-guide {
+    text-decoration: none;
+    color: #222;
+  }
+
+
+  .navbar-link-guide.active {
+    color: #33C3F0; }
+
   #bdshare {
     
   }
@@ -395,6 +415,10 @@
 
   .footer {
     margin-bottom: 1.5rem;
+  }
+
+  img.guide {
+    width: 100%;
   }
 
 /* latin */
