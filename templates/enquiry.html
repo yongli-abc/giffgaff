@@ -53,7 +53,7 @@
                 <td>{{result[4]}}</td>
                 <td>{{result[5]}}</td>
                 <td>{{result[6][:10]}}</td>
-                <td><a href="enquiry?email={{result[1]|escape}}&amp;delete=1">删除</a></td>
+                <td><a href="{{ url_for('enquiry', email=result[1], delete=1) }}" >删除</a></td>
             </tbody>
         </tr>
     </table>
