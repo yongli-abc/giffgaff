@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, g, request, render_template, session
+from flask import Flask, g, request, render_template, session, g
 from captcha.image import ImageCaptcha
 import sqlite3, re, time, urllib2, json, random, sys, os
 sys.path.insert(0, './mail')
@@ -16,7 +16,7 @@ app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 ##################
 
 def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+    g.db = sqlite3.connect(app.config['DATABASE'])
 
 def init_db():
     with closing(connect_db()) as db:
@@ -39,8 +39,8 @@ def valid_form(form):
         errors.append(u"请输入正确的邮箱")
     else:
         try:
-            conn = connect_db()
-            cur = conn.cursor()
+            connect_db()
+            cur = g.db.cursor()
             cur.execute("select email from entries where email='%s'" % email)
             data = cur.fetchall()
             if len(data) > 0:
@@ -49,7 +49,7 @@ def valid_form(form):
         except Exception as e:
             errors.append(str(e))
         finally:
-            conn.close()
+            g.db.close()
 
     # 姓名验证
     name = form['name']
@@ -83,21 +83,21 @@ def save_record(form):
     '''
     errors = []
     try:
-        conn = connect_db()
-        conn.execute("insert into entries (email, name, phone, nano_qty, micro_qty) values (?, ?, ?, ?, ?)", (form['email'], form['name'], form['phone'], form['nano_qty'], form['micro_qty']))
-        conn.commit()
+        connect_db()
+        g.db.execute("insert into entries (email, name, phone, nano_qty, micro_qty) values (?, ?, ?, ?, ?)", (form['email'], form['name'], form['phone'], form['nano_qty'], form['micro_qty']))
+        g.db.commit()
     except Exception as e:
         errors.append(str(e))
     finally:
-        conn.close()
+        g.db.close()
         return errors
 
 def get_all_entries():
     try:
         # 获取所有条目
         errors = []
-        conn = connect_db()
-        cur = conn.cursor()
+        connect_db()
+        cur = g.db.cursor()
         cur.execute("select * from entries")
         results = cur.fetchall()
         cur.close()
@@ -107,11 +107,10 @@ def get_all_entries():
         stats['count'] = len(results)
         stats['nano_total'] = sum([row[4] for row in results])
         stats['micro_total'] = sum([row[5] for row in results])
-        print stats
     except Exception as e:
         errors.append(str(e))
     finally:
-        conn.close()
+        g.db.close()
         return (results, stats, errors)
 
 def generate_captcha():
@@ -208,7 +207,6 @@ def adminJson():
 def enquiry():
     enquiry_email = request.args.get('email')
     delete = request.args.get('delete')
-    print delete
     if not enquiry_email:
         # 给出初始查询页面提示
         return render_template("enquiry.html")
@@ -217,8 +215,8 @@ def enquiry():
         result = []
         errors = []
         try:
-            conn = connect_db()
-            cur = conn.cursor()
+            connect_db()
+            cur = g.db.cursor()
             cur.execute("select * from entries where email='%s'" % enquiry_email)
             data = cur.fetchall()
             if len(data) > 0:
@@ -227,7 +225,7 @@ def enquiry():
         except Exception as e:
             errors.append(str(e))
         finally:
-            conn.close()
+            g.db.close()
             if len(result) > 0:
                 # 有查询结果
                 return render_template("enquiry.html", result=result, errors=errors)
@@ -239,15 +237,15 @@ def enquiry():
         # 进行删除
         errors = []
         try:
-            conn = connect_db()
-            cur = conn.cursor()
+            connect_db()
+            cur = g.db.cursor()
             cur.execute("delete from entries where email='%s'" % enquiry_email)
             cur.close()
         except Exception as e:
             errors.append(str(e))
         finally:
-            conn.commit()
-            conn.close()
+            g.db.commit()
+            g.db.close()
             if cur.rowcount > 0:
                 # 删除成功
                 return render_template("enquiry.html", main_msg=u"预定信息删除成功！", msg_type="success", errors=errors)
