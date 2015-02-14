@@ -6,9 +6,8 @@ sys.path.insert(0, './mail')
 from mail import send_email
 from contextlib import closing
 
-
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = os.urandom(24) # 每次都使用一个我都不知道的密钥
 app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 
 ##################
@@ -126,7 +125,7 @@ def generate_captcha():
     image.write(captch_str, "static/captcha.png")
 
 @app.template_filter('randSuffix')
-def reverse_filter(original_url):
+def randSuffix(original_url):
     '''
     为验证码图片请求地址末尾加上随机字符串，确保图片不会被缓存，每次都会请求最新图片
     '''
@@ -277,6 +276,9 @@ if __name__ == "__main__":
     app.debug = True    # 只在测试环境开启 debug
     app.run()
 else:
-    # BAE发布环境
-    from bae.core.wsgi import WSGIApplication
-    application = WSGIApplication(app)
+    try:
+        # BAE发布环境
+        from bae.core.wsgi import WSGIApplication
+        application = WSGIApplication(app)
+    except ImportError:
+        print "Not in BAE context"
