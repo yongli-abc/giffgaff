@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, session
 from captcha.image import ImageCaptcha
-import sqlite3, re, time, urllib2, json, random, sys, os
+import sqlite3, re, time, urllib2, json, random, sys
 sys.path.insert(0, './mail')
 from mail import send_email
 from contextlib import closing
