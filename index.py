@@ -20,17 +20,17 @@ app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 
 # 创建订单Form类，实现验证逻辑
 class OrderForm(Form):
-    email = StringField('邮箱', validators=[validators.DataRequired(u'邮箱不能为空'), validators.Regexp(app.config['EMAIL_PATTERN'], message=u'请输入正确的邮箱')])
+    email = StringField(u'邮箱', validators=[validators.DataRequired(u'邮箱不能为空'), validators.Regexp(app.config['EMAIL_PATTERN'], message=u'请输入正确的邮箱')])
 
-    name = StringField('姓名', validators=[validators.DataRequired(u'姓名不能为空')])
+    name = StringField(u'姓名', validators=[validators.DataRequired(u'姓名不能为空')])
 
-    phone = StringField('电话', validators=[validators.DataRequired(u'电话不能为空'), validators.Regexp(app.config['PHONE_PATTERN'], message=u'请输入11位国内号码')])
+    phone = StringField(u'电话', validators=[validators.DataRequired(u'电话不能为空'), validators.Regexp(app.config['PHONE_PATTERN'], message=u'请输入11位国内号码')])
 
     nano_qty = SelectField(u'Nano 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
 
     micro_qty = SelectField(u'Micro 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
 
-    captcha = StringField('验证码', validators=[validators.DataRequired(u'验证码不能为空')])
+    captcha = StringField(u'验证码', validators=[validators.DataRequired(u'验证码不能为空')])
 
     def validate_email(self, field):
         if field.errors:    # 若邮箱已有错误，不再进行唯一性检查
