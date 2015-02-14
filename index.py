@@ -11,7 +11,7 @@ from wtforms import SelectField
 from wtforms import validators
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24) # 每次都使用一个我都不知道的密钥
+app.secret_key = "lajsdfljqoruoqwuerouzxocvuoz"
 app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 
 ##################
