@@ -15,5 +15,8 @@ class TestCase(unittest.TestCase):
         os.close(self.db_fd)
         os.unlink(index.app.config['DATABASE'])
 
+
+
 if __name__ == '__main__':
     unittest.main()
+    
