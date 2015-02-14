@@ -91,62 +91,45 @@
 
         {# 表单放在这里 #}
         {# 先处理表单验证的错误信息 #}
-        {% if errors %}
+        {% if form.errors %}
         <div class="error-msg">
-          <h6 class="docs-header error-msg">错误</h6>
-          <ul>
-              {% for error_msg in errors %}
-                <li>{{ error_msg }}</li>
-              {% endfor %}
-          </ul>
+            <h6 class="docs-header error-msg">错误</h6>
+            <ul>
+                {% for field, error in form.errors.iteritems() %}
+                    <li>{{ error[0] }}</li>
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
 
-        <form method='POST' action='index#detail'>
+        <form method="POST" action="index#detail">
+            {{ form.csrf_token }}
+            {{ form.email.label }} {{ form.email(class_='u-full-width')}}
+            {{ form.name.label }} {{ form.name(class_='u-full-width') }}
+            {{ form.phone.label }} {{ form.phone(class_='u-full-width') }}
 
-          <label>邮箱</label>
-          <input class="u-full-width" type="text" name="email"/>
-
-          <label>姓名</label>
-          <input class="u-full-width" type="text" name="name"/>
-
-          <label>电话</label>
-          <input class="u-full-width" type="text" name="phone"/>
-
-          <div class="row">
-            <div class="six columns">
-              <label>Nano 卡数量</label>
-              <select class="u-full-width"  name="nano_qty">
-                <option value=0 selected="selected">0</option>
-                {% for i in range(1,5) %}
-                    <option value={{i}}>{{i}}</option>
-                {% endfor %}
-              </select>
+            <div class="row">
+                <div class="six columns">
+                    {{ form.nano_qty.label }}{{ form.nano_qty(class_='u-full-width') }}
+                </div>
+                <div class="six columns">
+                    {{ form.micro_qty.label }}{{ form.micro_qty(class_='u-full-width') }}
+                </div>
             </div>
-            <div class="six columns">
-              <label>Micro 卡数量</label>
-              <select class="u-full-width" name="micro_qty">
-              <option value=0 selected="selected">0</option>
-              {% for i in range(1,5) %}
-                  <option value={{i}}>{{i}}</option>
-              {% endfor %}
-              </select>
-            </div>
-          </div>
 
-          <div class="row captcha">
-            <div class="six columns">
-            <label>验证码</label>
-              <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
+            <div class="row captcha">
+                <div class="six columns">
+                    {{ form.captcha.label }}
+                    <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
+                </div>
+                <div class="six columns">
+                    {{ form.captcha(class_='u-full-width') }}
+                </div>
+
             </div>
-            <div class="six columns">
-              <input class="u-full-width" type="text" name="captcha"/>
-            </div>
-          </div>
-          <br>
-          <input class="button-primary" id="form-button" type="submit" value="提交订单">
+            <br>
+            <input class="button-primary" id="form-button" type="submit" value="提交订单">
         </form>
-
       </div>
 
     </div>

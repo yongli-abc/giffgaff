@@ -1,18 +1,64 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, g, request, render_template, session, g
+from flask import Flask, g, request, render_template, session
 from captcha.image import ImageCaptcha
 import sqlite3, re, time, urllib2, json, random, sys, os
 sys.path.insert(0, './mail')
 from mail import send_email
 from contextlib import closing
+from flask_wtf import Form
+from wtforms import StringField
+from wtforms import SelectField
+from wtforms import validators
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) # 每次都使用一个我都不知道的密钥
 app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 
+
+
 ##################
 # 这里放一些辅助函数
 ##################
+
+# 创建订单Form类
+class OrderForm(Form):
+    email = StringField('邮箱', validators=[validators.DataRequired(u'邮箱不能为空'), validators.Regexp(app.config['EMAIL_PATTERN'], message=u'请输入正确的邮箱')])
+
+    name = StringField('姓名', validators=[validators.DataRequired(u'姓名不能为空')])
+
+    phone = StringField('电话', validators=[validators.DataRequired(u'电话不能为空'), validators.Regexp(app.config['PHONE_PATTERN'], message=u'请输入11位国内号码')])
+
+    nano_qty = SelectField(u'Nano 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
+
+    micro_qty = SelectField(u'Micro 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
+
+    captcha = StringField('验证码', validators=[validators.DataRequired(u'验证码不能为空')])
+
+    def validate_email(self, field):
+        if field.errors:    # 若邮箱已有错误，不再进行唯一性检查
+            return False
+        else:
+            
+
+    def validate_captcha(self, field):
+        if field.errors:    # 若验证码已验证为空，则不再进行对比验证
+            return False
+        elif field.data != session['captcha']:
+            field.errors.append(u'验证码错误')
+            return False
+        else:
+            return True
+
+    def validate(self):
+        rv = Form.validate(self)
+        # if not rv:
+        #     return False
+
+        if self.nano_qty.data == '0' and self.micro_qty.data == '0':
+            self.errors['whole'] = [u'至少选择一张卡']
+            return False
+        else:
+            return rv
 
 def connect_db():
     g.db = sqlite3.connect(app.config['DATABASE'])
@@ -22,58 +68,6 @@ def init_db():
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
-
-def valid_form(form):
-    '''
-    接收一个request.formd对象，检查各个field，返回错误字符串
-    若验证成功，则返回空字符串
-    '''
-    errors = []
-
-    # 邮箱验证
-    email = form['email']
-    if not email:
-        errors.append(u"邮箱不能为空")
-    elif not re.match(app.config['EMAIL_PATTERN'], email):
-        errors.append(u"请输入正确的邮箱")
-    else:
-        try:
-            connect_db()
-            cur = g.db.cursor()
-            cur.execute("select email from entries where email='%s'" % email)
-            data = cur.fetchall()
-            if len(data) > 0:
-                errors.append(u"该邮箱已经申请过，请勿重复提交")
-            cur.close()
-        except Exception as e:
-            errors.append(str(e))
-        finally:
-            g.db.close()
-
-    # 姓名验证
-    name = form['name']
-    if not name:
-        errors.append(u"姓名不能为空")
-
-    # 电话验证
-    phone = form['phone']
-    if not phone:
-        errors.append(u"电话不能为空")
-    elif not re.match(app.config['PHONE_PATTERN'], phone):
-        errors.append(u"请输入正确的电话，11位国内号码")
-
-    # 卡数验证
-    nano_qty = int(form['nano_qty'])
-    micro_qty = int(form['micro_qty'])
-    if not nano_qty and not micro_qty:
-        errors.append(u"至少选择一张卡")
-
-    if not errors:
-        # 检查验证码
-        if session['captcha'] != form['captcha']:
-            errors.append(u"验证码输入错误")
-
-    return errors
 
 def save_record(form):
     '''
@@ -139,30 +133,41 @@ def randSuffix(original_url):
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    if request.method == 'GET':
-        # 验证码生成
+    form = OrderForm()
+    if form.validate_on_submit():
+        # 表单被提交并且验证成功
         generate_captcha()
-        return render_template("index.html")
 
-    elif request.method == 'POST':
-        # 先做表单验证，再重新生成验证码，避免session['captcha']被覆盖
-        errors = valid_form(request.form)
-        generate_captcha()
-        if not errors:
-            # 表单验证成功，保存数据
-            errors = save_record(request.form)
-            if not errors:
-                # 发送确认邮件
-                receiver_list = [(request.form['email'], request.form['name'])]
-                subject = 'giffgaff 订单确认'
-                text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
-                send_email(receiver_list, subject, text)
-                return render_template("index.html", ok_flag=True)
-            else:
-                return render_template("index.html", errors=errors)
-        else:
-            # 表单验证失败，返回带错误信息的模版
-            return render_template("index.html", errors=errors)
+        # 存储数据
+
+        save_record(request.form)
+
+        # 发送邮件
+
+        return render_template("index.html", form=form, ok_flag=True)
+    else:
+        # 新表单或者有错误
+        generate_captcha() # 刷新验证码
+        return render_template("index.html", form=form)
+
+        # # 先做表单验证，再重新生成验证码，避免session['captcha']被覆盖
+        # errors = valid_form(request.form)
+        # generate_captcha()
+        # if not errors:
+        #     # 表单验证成功，保存数据
+        #     errors = save_record(request.form)
+        #     if not errors:
+        #         # 发送确认邮件
+        #         receiver_list = [(request.form['email'], request.form['name'])]
+        #         subject = 'giffgaff 订单确认'
+        #         text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
+        #         send_email(receiver_list, subject, text)
+        #         return render_template("index.html", ok_flag=True)
+        #     else:
+        #         return render_template("index.html", errors=errors)
+        # else:
+        #     # 表单验证失败，返回带错误信息的模版
+        #     return render_template("index.html", errors=errors)
 
 # 后台页面
 @app.route('/admin', methods=['GET', 'POST'])
