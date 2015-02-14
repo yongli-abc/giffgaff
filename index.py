@@ -14,13 +14,11 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24) # 每次都使用一个我都不知道的密钥
 app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 
-
-
 ##################
 # 这里放一些辅助函数
 ##################
 
-# 创建订单Form类
+# 创建订单Form类，实现验证逻辑
 class OrderForm(Form):
     email = StringField('邮箱', validators=[validators.DataRequired(u'邮箱不能为空'), validators.Regexp(app.config['EMAIL_PATTERN'], message=u'请输入正确的邮箱')])
 
@@ -37,8 +35,22 @@ class OrderForm(Form):
     def validate_email(self, field):
         if field.errors:    # 若邮箱已有错误，不再进行唯一性检查
             return False
-        else:
-            
+        else:   # 进行邮箱唯一性检查
+            try:
+                connect_db()
+                cur = g.db.cursor()
+                cur.execute("select email from entries where email='%s'" % field.data)
+                data = cur.fetchall()
+                if len(data) > 0:
+                    field.errors.append(u"该邮箱已经申请过，请勿重复提交")
+                    return False
+            except Exception as e:
+                field.errors.append(str(e))
+            finally:
+                cur.close()
+                g.db.close()
+
+            return True
 
     def validate_captcha(self, field):
         if field.errors:    # 若验证码已验证为空，则不再进行对比验证
@@ -139,35 +151,19 @@ def index():
         generate_captcha()
 
         # 存储数据
-
         save_record(request.form)
 
         # 发送邮件
+        receiver_list = [(request.form['email'], request.form['name'])]
+        subject = 'giffgaff 订单确认'
+        text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
+        send_email(receiver_list, subject, text)
 
         return render_template("index.html", form=form, ok_flag=True)
     else:
         # 新表单或者有错误
         generate_captcha() # 刷新验证码
         return render_template("index.html", form=form)
-
-        # # 先做表单验证，再重新生成验证码，避免session['captcha']被覆盖
-        # errors = valid_form(request.form)
-        # generate_captcha()
-        # if not errors:
-        #     # 表单验证成功，保存数据
-        #     errors = save_record(request.form)
-        #     if not errors:
-        #         # 发送确认邮件
-        #         receiver_list = [(request.form['email'], request.form['name'])]
-        #         subject = 'giffgaff 订单确认'
-        #         text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
-        #         send_email(receiver_list, subject, text)
-        #         return render_template("index.html", ok_flag=True)
-        #     else:
-        #         return render_template("index.html", errors=errors)
-        # else:
-        #     # 表单验证失败，返回带错误信息的模版
-        #     return render_template("index.html", errors=errors)
 
 # 后台页面
 @app.route('/admin', methods=['GET', 'POST'])
