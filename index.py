@@ -1,35 +1,28 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, session
 from captcha.image import ImageCaptcha
-import sqlite3, re, time, urllib2, json, random, sys
+import sqlite3, re, time, urllib2, json, random, sys, os
 sys.path.insert(0, './mail')
 from mail import send_email
+from contextlib import closing
 
 
 app = Flask(__name__)
-app.debug = True
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-##################
-# 一些全局配置变量
-##################
-DATABASE = "tmp/data.sqlite"
-ADMIN = "admin"
-PASSWORD = "spreadgiffgaff"
-EMAIL_PATTERN = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
-PHONE_PATTERN = '(1)(3\d|4[5,7]|5[0-3,5-9]|8[0,2,3,6-9])\D*(\d{4})\D*(\d{4})$'
+app.secret_key = os.urandom(24)
+app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
 
 ##################
 # 这里放一些辅助函数
 ##################
 
 def connect_db():
-    return sqlite3.connect(DATABASE)
+    return sqlite3.connect(app.config['DATABASE'])
 
 def init_db():
-    db = connect_db()
-    with open('schema.sql') as f:
-        db.cursor().executescript(f.read())
-    db.commit()
+    with closing(connect_db()) as db:
+        with app.open_resource('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
 
 def valid_form(form):
     '''
@@ -42,7 +35,7 @@ def valid_form(form):
     email = form['email']
     if not email:
         errors.append(u"邮箱不能为空")
-    elif not re.match(EMAIL_PATTERN, email):
+    elif not re.match(app.config['EMAIL_PATTERN'], email):
         errors.append(u"请输入正确的邮箱")
     else:
         try:
@@ -67,7 +60,7 @@ def valid_form(form):
     phone = form['phone']
     if not phone:
         errors.append(u"电话不能为空")
-    elif not re.match(PHONE_PATTERN, phone):
+    elif not re.match(app.config['PHONE_PATTERN'], phone):
         errors.append(u"请输入正确的电话，11位国内号码")
 
     # 卡数验证
@@ -187,7 +180,7 @@ def admin():
         username = request.form['username']
         password = request.form['password']
 
-        if username == ADMIN and password == PASSWORD:
+        if username == app.config['ADMIN'] and password == app.config['PASSWORD']:
             # 输入正确，设置session，下次直接进入后台
             if not session.has_key("admin_flag"):
                 session['admin_flag'] = True
@@ -205,7 +198,7 @@ def adminJson():
     username = request.form['username']
     password = request.form['password']
 
-    if username == ADMIN and password == PASSWORD:
+    if username == app.config['ADMIN'] and password == app.config['PASSWORD']:
         # 验证成功，获取所有数据
         results = get_all_entries()[0]
         return json.dumps(results)
@@ -283,6 +276,7 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     # 本地测试环境
+    app.debug = True    # 只在测试环境开启 debug
     app.run()
 else:
     # BAE发布环境
