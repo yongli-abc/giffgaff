@@ -296,13 +296,13 @@ else:
         # BAE发布环境
         from bae_log import handlers
 
-        # 配置日志服务
-        handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG", bufcount = 1)
-        logger = logging.getLogger()
-        logger.addHandler(handler)
-        logger.setLevel(logging.DEBUG)
-        logger.debug("程序开始运行。")
-
+        # # 配置日志服务
+        # handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG", bufcount = 1)
+        # logger = logging.getLogger()
+        # logger.addHandler(handler)
+        # logger.setLevel(logging.DEBUG)
+        # logger.debug("程序开始运行。")
+        #
 
         from bae.core.wsgi import WSGIApplication
         application = WSGIApplication(app)
