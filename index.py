@@ -291,15 +291,17 @@ if __name__ == "__main__":
 else:
     try:
         # BAE发布环境
-        from bae.core.wsgi import WSGIApplication
-        application = WSGIApplication(app)
         from bae_log import handlers
 
         # 配置日志服务
-        handler = handlers.BaeLogHandler(ak = "apikey", sk = "secretkey")
+        handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG")
         logger = logging.getLogger()
         logger.addHandler(handler)
-
+        logger.setLevel(logging.DEBUG)
         logger.debug("程序开始运行。")
+
+
+        from bae.core.wsgi import WSGIApplication
+        application = WSGIApplication(app)
     except ImportError:
         print "Not in BAE context"
