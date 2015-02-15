@@ -55,10 +55,8 @@ class OrderForm(Form):
                 if len(data) > 0:
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
-                    logger.debug("This is line 1")
-                    logger.debug(field.data)
-                    logger.debug(self.name.data)
-                    logger.debug("This is line 2")
+                    msg = "用户: " + field.data + " 尝试重复提交。"
+                    logger.debug(msg)
                     return False
             except Exception as e:
                 field.errors.append(str(e))
