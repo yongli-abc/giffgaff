@@ -55,7 +55,7 @@ class OrderForm(Form):
                 if len(data) > 0:
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
-                    msg = "用户: " + field.data + " 尝试重复提交。"
+                    msg = "Email: %s is trying to submit again." % field.data
                     logger.debug(msg)
                     return False
             except Exception as e:
