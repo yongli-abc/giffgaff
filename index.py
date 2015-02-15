@@ -159,13 +159,13 @@ def index():
         generate_captcha()
 
         # 存储数据
-        # save_record(request.form)
+        save_record(request.form)
 
         # 发送邮件
-        # receiver_list = [(request.form['email'], request.form['name'])]
-        # subject = 'giffgaff 订单确认'
-        # text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
-        # send_email(receiver_list, subject, text)
+        receiver_list = [(request.form['email'], request.form['name'])]
+        subject = 'giffgaff 订单确认'
+        text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
+        send_email(receiver_list, subject, text)
 
         return render_template("index.html", form=form, ok_flag=True)
     else:
