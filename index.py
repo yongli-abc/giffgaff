@@ -56,6 +56,7 @@ class OrderForm(Form):
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
                     msg = "Email: %s is trying to submit again." % field.data
+                    msg += "\nPhone: %s" % self.phone.data
                     logger.debug(msg)
                     return False
             except Exception as e:
@@ -270,6 +271,8 @@ def enquiry():
             g.db.close()
             if cur.rowcount > 0:
                 # 删除成功
+                msg = "Email: %s is deleted from database." % enquiry_email
+                logger.debug(msg)
                 return render_template("enquiry.html", main_msg=u"预定信息删除成功！", msg_type="success", errors=errors)
                 pass
             else:
