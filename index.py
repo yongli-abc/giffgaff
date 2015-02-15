@@ -22,7 +22,6 @@ try:
     logger = logging.getLogger()
     logger.addHandler(handler)
     logger.setLevel(logging.DEBUG)
-    logger.debug("程序开始运行。")
 except:
     pass
 
@@ -57,7 +56,7 @@ class OrderForm(Form):
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
 
-                    logger.debug("用户尝试重复提交。")
+                    logger.debug("用户 " + field.data + " 尝试重复提交。")
                     return False
             except Exception as e:
                 field.errors.append(str(e))
