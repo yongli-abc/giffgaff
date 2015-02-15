@@ -9,6 +9,7 @@ from flask_wtf import Form
 from wtforms import StringField
 from wtforms import SelectField
 from wtforms import validators
+import logging
 
 app = Flask(__name__)
 app.secret_key = "lajsdfljqoruoqwuerouzxocvuoz"
@@ -43,6 +44,9 @@ class OrderForm(Form):
                 data = cur.fetchall()
                 if len(data) > 0:
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
+                    # 记录重复提交行为
+                    logger = logging.getLogger()
+                    logger.info("用户 %s 尝试重复提交。" % field.data)
                     return False
             except Exception as e:
                 field.errors.append(str(e))
@@ -289,5 +293,13 @@ else:
         # BAE发布环境
         from bae.core.wsgi import WSGIApplication
         application = WSGIApplication(app)
+        from bae_log import handlers
+
+        # 配置日志服务
+        handler = handlers.BaeLogHandler(ak = "apikey", sk = "secretkey")
+        logger = logging.getLogger()
+        logger.addHandler(handler)
+
+        logger.debug("程序开始运行。")
     except ImportError:
         print "Not in BAE context"
