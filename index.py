@@ -294,7 +294,7 @@ else:
         from bae_log import handlers
 
         # 配置日志服务
-        handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG")
+        handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG", bufcount = 1)
         logger = logging.getLogger()
         logger.addHandler(handler)
         logger.setLevel(logging.DEBUG)
