@@ -32,20 +32,6 @@
 
 
 <div class="docs-section">
-    {# 提交成功后的信息 #}
-    {% if ok_flag %}
-    <div class="success-msg">
-      <h6 class="docs-header success-msg">成功</h6>
-      <ul>
-        <li>已向您发送确认邮件。您无需任何操作，但若未收到邮件，则可能邮箱填写错误。</li>
-        <li>
-            你可以在 <a href="enquiry" target="_blank">这里</a> 查询预定状态。重新提交需在查询页面先删除订单。
-        </li>
-        <li>觉得很棒？帮助我们 <a href="#share">分享</a> 吧！</li>
-      </ul>
-    </div>
-    {% endif %}
-    
     <div class="row">
       <div class="eight columns" id="intro">
         <h6 class="docs-header">giffgaff简介</h6>
@@ -89,52 +75,63 @@
 
       <div class="four columns" id="forms">
         <h6 class="docs-header">申请表</h6>
+        {% if ok_flag %}
+            <div class="success-msg">
+              <ul>
+                <li>申请提交成功</li>
+              </ul>
+            </div>
 
-        {# 表单放在这里 #}
-        {# 先处理表单验证的错误信息 #}
-        {% if form.errors %}
-        <div class="error-msg">
-            <h6 class="docs-header error-msg">错误</h6>
-            <ul>
-                {% for field, error in form.errors.iteritems() %}
-                    <li>{{ error[0] }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+            <p>已向您发送确认邮件。您无需任何操作，但若未收到邮件，则可能邮箱填写错误。</p>
+            <p>你可以在 <a href="enquiry" target="_blank">这里</a> 查询预定状态。重新提交需在查询页面先删除订单。</p>
+            <p>觉得很棒？帮助我们 <a href="#share">分享</a> 给你的朋友吧！</p>
+        {% else %}
+            {# 先处理表单验证的错误信息 #}
+            {% if form.errors %}
+            <div class="error-msg">
+                <h6 class="docs-header error-msg">错误</h6>
+                <ul>
+                    {% for field, error in form.errors.iteritems() %}
+                        <li>{{ error[0] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="index#detail">
+                {{ form.csrf_token }}
+                {{ form.email.label }} {{ form.email(class_='u-full-width')}}
+                {{ form.name.label }} {{ form.name(class_='u-full-width') }}
+                {{ form.phone.label }} {{ form.phone(class_='u-full-width') }}
+
+                <div class="row">
+                    <div class="six columns">
+                        {{ form.nano_qty.label }}{{ form.nano_qty(class_='u-full-width') }}
+                    </div>
+                    <div class="six columns">
+                        {{ form.micro_qty.label }}{{ form.micro_qty(class_='u-full-width') }}
+                    </div>
+                </div>
+
+                <div class="row captcha">
+                    <div class="six columns">
+                        {{ form.captcha.label }}
+                        <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
+                    </div>
+                    <div class="six columns">
+                        {{ form.captcha(class_='u-full-width') }}
+                    </div>
+
+                </div>
+                <br>
+                <input class="button-primary" id="form-button" type="submit" value="提交订单">
+            </form>
+
         {% endif %}
-
-        <form method="POST" action="index#detail">
-            {{ form.csrf_token }}
-            {{ form.email.label }} {{ form.email(class_='u-full-width')}}
-            {{ form.name.label }} {{ form.name(class_='u-full-width') }}
-            {{ form.phone.label }} {{ form.phone(class_='u-full-width') }}
-
-            <div class="row">
-                <div class="six columns">
-                    {{ form.nano_qty.label }}{{ form.nano_qty(class_='u-full-width') }}
-                </div>
-                <div class="six columns">
-                    {{ form.micro_qty.label }}{{ form.micro_qty(class_='u-full-width') }}
-                </div>
-            </div>
-
-            <div class="row captcha">
-                <div class="six columns">
-                    {{ form.captcha.label }}
-                    <img src="{{ url_for('static',filename='captcha.png') | randSuffix }}"/>
-                </div>
-                <div class="six columns">
-                    {{ form.captcha(class_='u-full-width') }}
-                </div>
-
-            </div>
-            <br>
-            <input class="button-primary" id="form-button" type="submit" value="提交订单">
-        </form>
       </div>
 
     </div>
-</div>
+    </div>
 
 <div class="docs-section" id="price">
   <div class="row">

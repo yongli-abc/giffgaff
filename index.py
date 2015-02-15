@@ -65,12 +65,20 @@ class OrderForm(Form):
         rv = Form.validate(self)
         # if not rv:
         #     return False
+        print self.errors
+        flag1 = True
+        flag2 = True
 
         if self.nano_qty.data == '0' and self.micro_qty.data == '0':
             self.errors['whole'] = [u'至少选择一张卡']
-            return False
-        else:
-            return rv
+            flag1 = False
+
+        if self.csrf_token.errors:  # 修改CSRF缺失时的错误提示
+            self.csrf_token.errors[0] = u'CSRF标志缺失'
+            flag2 = False
+
+
+        return rv and flag1 and flag2
 
 def connect_db():
     g.db = sqlite3.connect(app.config['DATABASE'])
@@ -151,13 +159,13 @@ def index():
         generate_captcha()
 
         # 存储数据
-        save_record(request.form)
+        # save_record(request.form)
 
         # 发送邮件
-        receiver_list = [(request.form['email'], request.form['name'])]
-        subject = 'giffgaff 订单确认'
-        text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
-        send_email(receiver_list, subject, text)
+        # receiver_list = [(request.form['email'], request.form['name'])]
+        # subject = 'giffgaff 订单确认'
+        # text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
+        # send_email(receiver_list, subject, text)
 
         return render_template("index.html", form=form, ok_flag=True)
     else:
