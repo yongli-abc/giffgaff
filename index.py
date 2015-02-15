@@ -14,6 +14,10 @@ import logging
 app = Flask(__name__)
 app.secret_key = "lajsdfljqoruoqwuerouzxocvuoz"
 app.config.from_pyfile('settings.py', silent=True)  # 读入全局配置
+handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG", bufcount = 1)
+logger = logging.getLogger()
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
 
 ##################
 # 这里放一些辅助函数
@@ -45,10 +49,7 @@ class OrderForm(Form):
                 if len(data) > 0:
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
-                    handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG", bufcount = 1)
-                    logger = logging.getLogger()
-                    logger.addHandler(handler)
-                    logger.setLevel(logging.DEBUG)
+
                     logger.debug("用户 %s 尝试重复提交。" % field.data)
                     return False
             except Exception as e:
@@ -303,6 +304,8 @@ else:
         # logger.setLevel(logging.DEBUG)
         # logger.debug("程序开始运行。")
         #
+
+        logger.debug("程序开始运行")
 
         from bae.core.wsgi import WSGIApplication
         application = WSGIApplication(app)
