@@ -45,7 +45,10 @@ class OrderForm(Form):
                 if len(data) > 0:
                     field.errors.append(u"该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
+                    handler = handlers.BaeLogHandler(ak = "avtXC5RVRQGaB4dQ2Vm5QGYf", sk = "r2q6Y4t4hL5GrkbFbRU6ODEFocnFvljG", bufcount = 1)
                     logger = logging.getLogger()
+                    logger.addHandler(handler)
+                    logger.setLevel(logging.DEBUG)
                     logger.debug("用户 %s 尝试重复提交。" % field.data)
                     return False
             except Exception as e:
