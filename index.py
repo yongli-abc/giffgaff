@@ -168,25 +168,26 @@ def randSuffix(original_url):
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    form = OrderForm()
-    if form.validate_on_submit():
-        # 表单被提交并且验证成功
-        generate_captcha()
+    return render_template("index.html")
+    # form = OrderForm()
+    # if form.validate_on_submit():
+    #     # 表单被提交并且验证成功
+    #     generate_captcha()
 
-        # 存储数据
-        save_record(request.form)
+    #     # 存储数据
+    #     save_record(request.form)
 
-        # 发送邮件
-        receiver_list = [(request.form['email'], request.form['name'])]
-        subject = 'giffgaff 订单确认'
-        text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
-        send_email(receiver_list, subject, text)
+    #     # 发送邮件
+    #     receiver_list = [(request.form['email'], request.form['name'])]
+    #     subject = 'giffgaff 订单确认'
+    #     text = "您的 giffgaff 订单已经确认！请等待我们的后续通知。\n预期将于5月底通知具体的领卡时间和地点。\n"
+    #     send_email(receiver_list, subject, text)
 
-        return render_template("index.html", form=form, ok_flag=True)
-    else:
-        # 新表单或者有错误
-        generate_captcha() # 刷新验证码
-        return render_template("index.html", form=form)
+    #     return render_template("index.html", form=form, ok_flag=True)
+    # else:
+    #     # 新表单或者有错误
+    #     generate_captcha() # 刷新验证码
+    #     return render_template("index.html", form=form)
 
 # 后台页面
 @app.route('/admin', methods=['GET', 'POST'])
