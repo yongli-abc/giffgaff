@@ -4,3 +4,4 @@ local_backup
 static/captcha.png
 tmp/data.sqlite
 *.sqlite
+pid
