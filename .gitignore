@@ -5,3 +5,4 @@ static/captcha.png
 tmp/data.sqlite
 *.sqlite
 pid
+py_env

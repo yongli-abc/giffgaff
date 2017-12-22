@@ -2,11 +2,11 @@
 
 WORKER_NUM=2
 HOST="127.0.0.1"
-PORT="8000"
+PORT="8222"
 PID_PATH="$PWD/pid"
 
 start() {
-	echo "Starting giffgaff.yongli1992.com"	
+	echo "Starting giffgaff.yongli1992.com"
 	if [[ -f "$PID_PATH" ]]; then
 		pid=$(cat "$PID_PATH")
 		echo $"gunicorn is already running giffgaff with pid [$pid], please stop first."
