@@ -34,6 +34,6 @@ def send_email(receiver_list, subject, text):
 
         try:
             requests.post(url, files="", data=params)
-            print "Send successfully."
+            print("Send successfully.")
         except:
-            print "Error: unable to send email!"
+            print("Error: unable to send email!")

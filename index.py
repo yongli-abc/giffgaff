@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, session
 from captcha.image import ImageCaptcha
-import sqlite3, re, time, urllib2, json, random, sys
+import sqlite3, re, time, urllib.request, urllib.error, urllib.parse, json, random, sys
 sys.path.insert(0, './mail')
 from mail import send_email
 from contextlib import closing
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms import SelectField
 from wtforms import validators
@@ -30,18 +30,18 @@ except:
 ##################
 
 # 创建订单Form类，实现验证逻辑
-class OrderForm(Form):
-    email = StringField(u'邮箱', validators=[validators.DataRequired(u'邮箱不能为空'), validators.Regexp(app.config['EMAIL_PATTERN'], message=u'请输入正确的邮箱')])
+class OrderForm(FlaskForm):
+    email = StringField('邮箱', validators=[validators.DataRequired('邮箱不能为空'), validators.Regexp(app.config['EMAIL_PATTERN'], message='请输入正确的邮箱')])
 
-    name = StringField(u'姓名', validators=[validators.DataRequired(u'姓名不能为空')])
+    name = StringField('姓名', validators=[validators.DataRequired('姓名不能为空')])
 
-    phone = StringField(u'电话', validators=[validators.DataRequired(u'电话不能为空'), validators.Regexp(app.config['PHONE_PATTERN'], message=u'请输入11位国内号码')])
+    phone = StringField('电话', validators=[validators.DataRequired('电话不能为空'), validators.Regexp(app.config['PHONE_PATTERN'], message='请输入11位国内号码')])
 
-    nano_qty = SelectField(u'Nano 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
+    nano_qty = SelectField('Nano 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
 
-    micro_qty = SelectField(u'Micro 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
+    micro_qty = SelectField('Micro 卡数量', choices=[(str(i), str(i)) for i in range(5)], default='0')
 
-    captcha = StringField(u'验证码', validators=[validators.DataRequired(u'验证码不能为空')])
+    captcha = StringField('验证码', validators=[validators.DataRequired('验证码不能为空')])
 
     def validate_email(self, field):
         if field.errors:    # 若邮箱已有错误，不再进行唯一性检查
@@ -53,7 +53,7 @@ class OrderForm(Form):
                 cur.execute("select email from entries where email='%s'" % field.data)
                 data = cur.fetchall()
                 if len(data) > 0:
-                    field.errors.append(u"该邮箱已经申请过，请勿重复提交")
+                    field.errors.append("该邮箱已经申请过，请勿重复提交")
                     # 记录重复提交行为
                     msg = "Email: %s is trying to submit again." % field.data
                     msg += "\nPhone: %s" % self.phone.data
@@ -71,25 +71,25 @@ class OrderForm(Form):
         if field.errors:    # 若验证码已验证为空，则不再进行对比验证
             return False
         elif field.data != session['captcha']:
-            field.errors.append(u'验证码错误')
+            field.errors.append('验证码错误')
             return False
         else:
             return True
 
     def validate(self):
-        rv = Form.validate(self)
+        rv = FlaskForm.validate(self)
         # if not rv:
         #     return False
-        print self.errors
+        print(self.errors)
         flag1 = True
         flag2 = True
 
         if self.nano_qty.data == '0' and self.micro_qty.data == '0':
-            self.errors['whole'] = [u'至少选择一张卡']
+            self.errors['whole'] = ['至少选择一张卡']
             flag1 = False
 
         if self.csrf_token.errors:  # 修改CSRF缺失时的错误提示
-            self.csrf_token.errors[0] = u'CSRF标志缺失'
+            self.csrf_token.errors[0] = 'CSRF标志缺失'
             flag2 = False
 
 
@@ -148,9 +148,9 @@ def generate_captcha():
     并设置session['captcha'] = captcha_str
     '''
     # 生成验证码
-    captch_str = "".join([str(random.choice(range(0,10))) for i in range(4)])
+    captch_str = "".join([str(random.choice(list(range(0, 10)))) for i in range(4)])
     session['captcha'] = captch_str
-    image = ImageCaptcha(width=118, height=38, font_sizes=(37,37,37))
+    image = ImageCaptcha(width=118, height=38, font_sizes=(37, 37, 37))
     image.write(captch_str, "static/captcha.png")
 
 @app.template_filter('randSuffix')
@@ -193,7 +193,7 @@ def index():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'GET':
-        if session.has_key("admin_flag"):
+        if "admin_flag" in session:
             results, stats, errors = get_all_entries()
             return render_template("admin.html", results=results, stats=stats, errors=errors)
         else:
@@ -205,7 +205,7 @@ def admin():
 
         if username == app.config['ADMIN'] and password == app.config['PASSWORD']:
             # 输入正确，设置session，下次直接进入后台
-            if not session.has_key("admin_flag"):
+            if "admin_flag" not in session:
                 session['admin_flag'] = True
 
             results, stats, errors = get_all_entries()
@@ -213,7 +213,7 @@ def admin():
             return render_template("admin.html", results=results, stats=stats, errors=errors)
         else:
             # 登陆验证失败
-            return render_template("admin.html", errors = [u"输入错误"])
+            return render_template("admin.html", errors = ["输入错误"])
 
 # 后台json api
 @app.route('/admin/json', methods=['POST'])
@@ -255,7 +255,7 @@ def enquiry():
                 return render_template("enquiry.html", result=result, errors=errors)
             else:
                 # 无查询结果
-                return render_template("enquiry.html", main_msg=u"查询不到该邮箱的预定信息！", msg_type="error", errors=errors)
+                return render_template("enquiry.html", main_msg="查询不到该邮箱的预定信息！", msg_type="error", errors=errors)
 
     elif delete:
         # 进行删除
@@ -274,11 +274,11 @@ def enquiry():
                 # 删除成功
                 msg = "Email: %s is deleted from database." % enquiry_email
                 logger.debug(msg)
-                return render_template("enquiry.html", main_msg=u"预定信息删除成功！", msg_type="success", errors=errors)
+                return render_template("enquiry.html", main_msg="预定信息删除成功！", msg_type="success", errors=errors)
                 pass
             else:
                 # 没有数据被影响
-                return render_template("enquiry.html", main_msg=u"无法删除不存在的信息！", msg_type="error", errors=errors)
+                return render_template("enquiry.html", main_msg="无法删除不存在的信息！", msg_type="error", errors=errors)
 
 
         return "Going to delete"
@@ -307,4 +307,4 @@ else:
         from bae.core.wsgi import WSGIApplication
         application = WSGIApplication(app)
     except ImportError:
-        print "Not in BAE context"
+        print("Not in BAE context")

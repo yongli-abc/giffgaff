@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: flask-app
+        image: yliabc/flask-giffgaff:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FLASK_APP
+          value: index.py
+        - name: FLASK_ENV
+          value: development
+      imagePullSecrets:
+      - name: regcred
+
+kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=yliabc --docker-password='qzh1egc0TVT0krc*njp' --docker-email=yongliabc888@gmail.com
